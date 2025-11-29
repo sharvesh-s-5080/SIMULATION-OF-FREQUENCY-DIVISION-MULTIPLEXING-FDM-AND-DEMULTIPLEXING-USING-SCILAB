@@ -20,24 +20,28 @@ Plot original signals, multiplexed signal, and demultiplexed signals for verific
 
 PROGRAM:
 ```
-fs = 80000;
-t = 0:1/fs:0.035;
+fs = 58400;
+t = 0:1/fs:0.03;
 
-m1 = sin(2*%pi*139*t);
-m2 = sin(2*%pi*149*t);
-m3 = sin(2*%pi*159*t);
-m4 = sin(2*%pi*169*t);
-m5 = sin(2*%pi*179*t);
-m6 = sin(2*%pi*189*t);
-                 
-fc = [1390 1490 1590 1690 1790 1890];
-                 
-c1 = cos(2*%pi*fc(1)*t);
-c2 = cos(2*%pi*fc(2)*t);
-c3 = cos(2*%pi*fc(3)*t);
-c4 = cos(2*%pi*fc(4)*t);
-c5 = cos(2*%pi*fc(5)*t);
-c6 = cos(2*%pi*fc(6)*t);
+
+m1 = 6.8*sin(2*%pi*534*t);
+m2 = 6.9*sin(2*%pi*544*t);
+m3 = 7.0*sin(2*%pi*554*t);
+m4 = 7.1*sin(2*%pi*564*t);
+m5 = 7.2*sin(2*%pi*574*t);
+m6 = 7.3*sin(2*%pi*584*t);
+
+
+fc = [5340 5440 5540 5640 5740 5840];
+
+
+c1 = 13.6*cos(2*%pi*fc(1)*t);
+c2 = 13.8*cos(2*%pi*fc(2)*t);
+c3 = 14*cos(2*%pi*fc(3)*t);
+c4 = 14.2*cos(2*%pi*fc(4)*t);
+c5 = 14.4*cos(2*%pi*fc(5)*t);
+c6 = 14.6*cos(2*%pi*fc(6)*t);
+
 
 s1 = m1 .* c1;
 s2 = m2 .* c2;
@@ -46,7 +50,9 @@ s4 = m4 .* c4;
 s5 = m5 .* c5;
 s6 = m6 .* c6;
 
+
 s = s1 + s2 + s3 + s4 + s5 + s6;
+
 
 d1 = 2 * s .* c1;
 d2 = 2 * s .* c2;
@@ -55,16 +61,19 @@ d4 = 2 * s .* c4;
 d5 = 2 * s .* c5;
 d6 = 2 * s .* c6;
 
-cutoff = 1000; // Hz
+
+cutoff = 585;  
 
 function y = fft_lowpass(x, cutoff, fs)
     N = length(x);
     X = fft(x);
     f = (0:N-1)*(fs/N);
-    mask = (f <= cutoff) | (f >= fs - cutoff);
+    mask = (f <= cutoff);
+
     Y = X .* mask;
     y = real(ifft(Y));
 endfunction
+
 
 r1 = fft_lowpass(d1, cutoff, fs);
 r2 = fft_lowpass(d2, cutoff, fs);
@@ -73,30 +82,39 @@ r4 = fft_lowpass(d4, cutoff, fs);
 r5 = fft_lowpass(d5, cutoff, fs);
 r6 = fft_lowpass(d6, cutoff, fs);
 
-scf(1);
-clf;
 
-subplot(6,3,1);  plot(t, m1);
-subplot(6,3,4);  plot(t, m2);
-subplot(6,3,7);  plot(t, m3);
-subplot(6,3,10); plot(t, m4);
-subplot(6,3,13); plot(t, m5);
-subplot(6,3,16); plot(t, m6);
+scf(1); clf;
 
-subplot(6,3,8);  plot(t, s);
 
-subplot(6,3,3);  plot(t, r1);
-subplot(6,3,6);  plot(t, r2);
-subplot(6,3,9);  plot(t, r3);
-subplot(6,3,12); plot(t, r4);
-subplot(6,3,15); plot(t, r5);
-subplot(6,3,18); plot(t, r6);
+subplot(6,2,1);  plot(t, m1);
+subplot(6,2,3);  plot(t, m2);
+subplot(6,2,5);  plot(t, m3);
+subplot(6,2,7); plot(t, m4);
+subplot(6,2,9); plot(t, m5);
+subplot(6,2,11); plot(t, m6);
+
+subplot(6,2,2);  plot(t, r1);
+subplot(6,2,4);  plot(t, r2);
+subplot(6,2,6);  plot(t, r3);
+subplot(6,2,8); plot(t, r4);
+subplot(6,2,10); plot(t, r5);
+subplot(6,2,12); plot(t, r6);
+
+scf(2); clf;
+subplot(1,1,1);  plot(t, s);title("FDM Signal");
+
 
 ```
 GRAPH:
 <img width="1919" height="992" alt="image" src="https://github.com/user-attachments/assets/ab07d178-a09d-435c-b28b-9798d83b9c53" />
 
 TABULATION:
+
+![WhatsApp Image 2025-11-29 at 15 44 15_46dcc722](https://github.com/user-attachments/assets/2e7f3cf3-41e4-48fb-a60e-d8653b95ed02)
+
+![WhatsApp Image 2025-11-29 at 15 44 16_b6e7f225](https://github.com/user-attachments/assets/9b5438c2-d363-40ce-867b-045f5dd4a3ba)
+
+
 
 RESULTS:
 The program successfully simulates FDM and demultiplexing for multiple frequency signals with filtering to recover original signals accurately in Scilab.
